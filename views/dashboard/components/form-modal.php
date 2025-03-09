@@ -10,53 +10,54 @@
             </div>
             <div class="modal-body">
                 <form class="needs-validation" novalidate>
+                  <input type="hidden" name="id" id="formId">
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label for="firstName" class="form-label">First Name <span class="text-danger fw-bold">*</span></label>
-                            <input type="text" class="form-control" id="firstName" placeholder="Enter your first name" required>
+                            <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Enter your first name" required>
                             <div class="invalid-feedback">Please enter your first name.</div>
                         </div>
                         <div class="col-md-6">
                             <label for="lastName" class="form-label">Last Name <span class="text-danger fw-bold">*</span></label>
-                            <input type="text" class="form-control" id="lastName" placeholder="Enter your last name" required>
+                            <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Enter your last name" required>
                             <div class="invalid-feedback">Please enter your last name.</div>
                         </div>
                     </div>
                     <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" placeholder="Enter your email">
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email">
                         <div class="invalid-feedback">Please provide a valid email address.</div>
                     </div>
                     <div class="mb-3">
                         <label for="phone" class="form-label">Phone</label>
-                        <input type="tel" class="form-control" id="phone" placeholder="Enter your phone number" pattern="[0-9]+" required>
+                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="Enter your phone number" pattern="[0-9]+" required>
                         <div class="invalid-feedback">Please enter a valid phone number (numbers only).</div>
                     </div>
                     <div class="mb-3">
                         <label for="address" class="form-label">Address <span class="text-danger fw-bold">*</span></label>
-                        <input type="text" class="form-control" id="address" placeholder="Enter your address" required>
+                        <input type="text" class="form-control" id="address" name="address" placeholder="Enter your address" required>
                         <div class="invalid-feedback">Please provide your address.</div>
                     </div>
                     <div class="row g-3">
                         <div class="col-md-4">
                             <label for="city" class="form-label">City <span class="text-danger fw-bold">*</span></label>
-                            <input type="text" class="form-control" id="city" placeholder="City" required>
+                            <input type="text" class="form-control" id="city" name="city" placeholder="City" required>
                             <div class="invalid-feedback">Please enter your city.</div>
                         </div>
                         <div class="col-md-4">
                             <label for="state" class="form-label">State</label>
-                            <input type="text" class="form-control" id="state" placeholder="State">
+                            <input type="text" class="form-control" id="state" name="state" placeholder="State">
                             <div class="invalid-feedback">Please enter your state.</div>
                         </div>
                         <div class="col-md-4">
                             <label for="zip" class="form-label">ZIP</label>
-                            <input type="text" class="form-control" id="zip" placeholder="ZIP" pattern="[0-9]+" required>
+                            <input type="text" class="form-control" id="zip" name="zip" placeholder="ZIP" pattern="[0-9]+" required>
                             <div class="invalid-feedback">Please enter a valid ZIP code (numbers only).</div>
                         </div>
                     </div>
                     <div class="mb-3 mt-3">
                         <label for="country" class="form-label">Country</label>
-                        <input type="text" class="form-control" id="country" placeholder="Country">
+                        <input type="text" class="form-control" id="country" name="country" placeholder="Country">
                         <div class="invalid-feedback">Please enter your country.</div>
                     </div>
                     <div class="modal-footer">

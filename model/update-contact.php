@@ -20,14 +20,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $sql = "UPDATE contacts SET 
                 first_name='$firstName', last_name='$lastName', email='$email', phone='$phone',
                 address='$address', city='$city', state='$state', zip='$zip', country='$country'
-            WHERE id=$id";
+            WHERE id='$id'";
 
-    if ($conn->query($sql) === TRUE) {
-        echo "Contact updated successfully!";
+    $result = mysqli_query($conn, $sql);
+    if ($result) {
+        echo "Record updated successfully";
     } else {
-        echo "Error: " . $conn->error;
+        echo "Error updating record: " . mysqli_error($conn);
     }
-
-    $conn->close();
 }
 ?>
