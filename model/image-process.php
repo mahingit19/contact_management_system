@@ -24,3 +24,6 @@ if (isset($_FILES['fileToUpload'])) {
     } 
 
 }
+else {
+    $uploadPath = "";
+}

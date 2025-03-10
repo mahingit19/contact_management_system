@@ -8,20 +8,23 @@
         </button>
 
     </div>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Image</th>
-                <th scope="col">Full Name</th>
-                <th scope="col">Email</th>
-                <th scope="col">Phone</th>
-                <th scope="col">Address</th>
-                <th scope="col">Action</th>
-            </tr>
-        </thead>
-        <tbody id="table-body"> </tbody>
-    </table>
+    <div class="overflow-x-auto">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Full Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">Address</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody id="table-body"> </tbody>
+        </table>
+    </div>
+
 </div>
 
 <script>
@@ -52,7 +55,7 @@
                     });
                     $("#table-body").html(rows);
                     $("#total").html($(data).length);
-                    
+
 
                 },
                 error: function(xhr, status, error) {

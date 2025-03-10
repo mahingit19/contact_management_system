@@ -29,7 +29,7 @@
             <div class="invalid-feedback">Please provide a valid email address.</div>
           </div>
           <div class="mb-3">
-            <label for="phone" class="form-label">Phone (+880)</label>
+            <label for="phone" class="form-label">Phone (+880) <span class="text-danger fw-bold">*</span></label>
             <input type="tel" class="form-control" id="phone" name="phone" placeholder="Enter your phone number after (+880)" pattern="[0-9]+" required>
             <div class="invalid-feedback">Please enter exactly 10 digits after +880 (e.g., "XXXXXXXXXX").</div>
           </div>
@@ -50,7 +50,7 @@
               <div class="invalid-feedback">Please enter your state.</div>
             </div>
             <div class="col-md-4">
-              <label for="zip" class="form-label">ZIP</label>
+              <label for="zip" class="form-label">ZIP <span class="text-danger fw-bold">*</span></label>
               <input type="text" class="form-control" id="zip" name="zip" placeholder="ZIP" pattern="[0-9]+" required>
               <div class="invalid-feedback">Please enter a valid ZIP code (numbers only).</div>
             </div>
@@ -79,7 +79,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" id="submit-button">Submit</button>
+        <button type="button" class="btn btn-primary update-btn" id="submit-button">Submit</button>
       </div>
       </form>
     </div>
@@ -90,25 +90,70 @@
 <script>
   (function () {
   'use strict';
-  const phoneInput = document.querySelector('#phone'); // Ensure this matches your input field ID
-  const maxLength = 10; // The desired length for the phone number
-  
-  // Listen for the "input" event to validate in real time
-  phoneInput.addEventListener('input', function () {
-    const phoneValue = phoneInput.value.trim(); // Clean up any unwanted spaces
-    const isValid = /^\d+$/.test(phoneValue) && phoneValue.length === maxLength; // Check for digits and length
 
-    if (!isValid) {
-      phoneInput.classList.add('is-invalid'); // Bootstrap invalid styling
-      phoneInput.classList.remove('is-valid');
-      phoneInput.nextElementSibling.textContent = 
-        `Please enter exactly ${maxLength} digits (e.g., "XXXXXXXXXX").`;
-    } else {
-      phoneInput.classList.add('is-valid'); // Bootstrap valid styling
-      phoneInput.classList.remove('is-invalid');
+  const forms = document.querySelectorAll('.needs-validation');
+  const maxLength = 10; // Desired length for the phone number
+  const phoneInput = document.querySelector('#phone'); // Ensure this matches your phone input field ID
+  const updateButtons = document.querySelectorAll('.update-btn'); // Select all update buttons with the class
+
+  Array.from(forms).forEach(form => {
+    // Validate on input (real-time feedback)
+    phoneInput.addEventListener('input', function () {
+      validatePhone(phoneInput);
+    });
+
+    // Validate on form submission
+    form.addEventListener('submit', event => {
+      validatePhone(phoneInput); // Validate phone number
+      if (!form.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      form.classList.add('was-validated');
+    });
+
+    // Validate when any update button is clicked
+    updateButtons.forEach(button => {
+      button.addEventListener('click', function () {
+        validatePhone(phoneInput); // Validate phone number
+        form.classList.add('was-validated'); // Add Bootstrap validation styling
+
+        // Optional: Prevent the update action if validation fails
+        if (!form.checkValidity()) {
+          event.preventDefault();
+          console.log('Form is invalid and cannot be updated!');
+        } else {
+          console.log('Form is valid, proceeding with update...');
+        }
+      });
+    });
+
+    // Validate phone input on load if prefilled
+    if (phoneInput.value.trim() !== '') {
+      validatePhone(phoneInput);
     }
   });
+
+  // Function to validate the phone number
+  function validatePhone(phoneInput) {
+    const phoneValue = phoneInput.value.trim(); // Clean up spaces
+    const phoneRegex = /^\d{10}$/; // Matches exactly 10 digits
+
+    if (!phoneRegex.test(phoneValue)) {
+      phoneInput.setCustomValidity('Invalid'); // Mark as invalid
+      phoneInput.classList.add('is-invalid');
+      phoneInput.classList.remove('is-valid');
+      phoneInput.nextElementSibling.textContent =
+        `Please enter exactly ${maxLength} digits (e.g., "XXXXXXXXXX").`;
+    } else {
+      phoneInput.setCustomValidity(''); // Mark as valid
+      phoneInput.classList.remove('is-invalid');
+      phoneInput.classList.add('is-valid');
+    }
+  }
 })();
+
+
 
 
 
@@ -127,7 +172,7 @@
                             <td class="image-path" data-src="../../model/${item.photo}"><img src="../../model/${item.photo}" width="50px"></td>
                             <td><span class="first-name">${item.first_name}</span> <span class="last-name">${item.last_name}</span></td>
                             <td class="email">${item.email}</td>
-                            <td class="phone">+880${item.phone}</td>
+                            <td>+880<span class="phone">${item.phone}</span></td>
                             <td><span class="address">${item.address}</span>, <span class="city">${item.city}</span>, <span class="state">${item.state}</span>, <span class="zip">${item.zip}</span>, <span class="country">${item.country}</span></td>
                             <td>
                                 <div class="d-flex gap-2">
