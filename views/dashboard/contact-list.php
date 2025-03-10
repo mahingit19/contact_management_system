@@ -75,6 +75,7 @@
                     success: function(response) {
                         alert("Data deleted successfully: " + response);
                         button.closest("tr").remove(); // Remove the row from the table
+                        loadTableData(); // Refresh the table
                     },
                     error: function(xhr, status, error) {
                         alert("An error occurred: " + error);

@@ -20,11 +20,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $sql = "UPDATE contacts SET 
                 first_name='$firstName', last_name='$lastName', email='$email', phone='$phone',
                 address='$address', city='$city', state='$state', zip='$zip', country='$country'
-            WHERE id='$id'";
+            WHERE id=$id";
 
     $result = mysqli_query($conn, $sql);
     if ($result) {
-        echo "Record updated successfully";
+        echo "Record updated successfully for id: $id";
     } else {
         echo "Error updating record: " . mysqli_error($conn);
     }
