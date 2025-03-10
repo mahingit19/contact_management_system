@@ -16,6 +16,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $zip = $_POST['zip'];
     $country = $_POST['country'];
 
+    include "image-update.php";
+
     // Update query
     $sql = "UPDATE contacts SET 
                 first_name='$firstName', last_name='$lastName', email='$email', phone='$phone',
@@ -29,4 +31,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "Error updating record: " . mysqli_error($conn);
     }
 }
-?>
+
+
+require "../db/db-close.php";

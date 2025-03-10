@@ -14,3 +14,5 @@ if ($result->num_rows > 0) {
     }
 }
 echo json_encode($data);
+
+require "../db/db-close.php";

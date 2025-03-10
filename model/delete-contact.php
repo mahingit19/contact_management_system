@@ -7,6 +7,16 @@ require "../db/db-select.php";
 if (isset($_POST["id"])) {
     $id = $_POST["id"];
 
+    $sql = "SELECT photo FROM contacts WHERE id = $id";
+    $result = mysqli_query($conn, $sql);
+    if (mysqli_num_rows($result) > 0) {
+        $row = mysqli_fetch_assoc($result);
+        $photoPath = $row["photo"];
+        if (file_exists($photoPath)) {
+            unlink($photoPath);
+        }
+    }
+
     $sql = "DELETE FROM contacts WHERE id = $id";
     $result = mysqli_query($conn, $sql);
 
@@ -17,3 +27,5 @@ if (isset($_POST["id"])) {
     }
 
 }
+
+require "../db/db-close.php";

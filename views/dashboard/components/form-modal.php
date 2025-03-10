@@ -29,9 +29,9 @@
             <div class="invalid-feedback">Please provide a valid email address.</div>
           </div>
           <div class="mb-3">
-            <label for="phone" class="form-label">Phone</label>
-            <input type="tel" class="form-control" id="phone" name="phone" placeholder="Enter your phone number" pattern="[0-9]+" required>
-            <div class="invalid-feedback">Please enter a valid phone number (numbers only).</div>
+            <label for="phone" class="form-label">Phone (+880)</label>
+            <input type="tel" class="form-control" id="phone" name="phone" placeholder="Enter your phone number after (+880)" pattern="[0-9]+" required>
+            <div class="invalid-feedback">Please enter exactly 10 digits after +880 (e.g., "XXXXXXXXXX").</div>
           </div>
           <div class="mb-3">
             <label for="address" class="form-label">Address <span class="text-danger fw-bold">*</span></label>
@@ -60,46 +60,74 @@
             <input type="text" class="form-control" id="country" name="country" placeholder="Country">
             <div class="invalid-feedback">Please enter your country.</div>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" id="submit-button">Submit</button>
+          <div class="mb-3 mt-3">
+            <div class="fullscreen-drop" id="fullscreenDrop">
+              <h5 class="text-dark">Drop your image here!</h5>
+            </div>
+            <div class="mb-3">
+              <label for="imageInput" class="form-label">Upload Your Image</label>
+              <div class="upload-area" id="uploadArea">
+                Drag and drop an image here or click to upload
+                <input type="file" class="form-control d-none" id="imageInput" accept="image/*">
+              </div>
+            </div>
+            <div class="image-preview" id="imagePreview" style="display: none;">
+              <button type="button" class="btn-close remove-button" id="removeButton" aria-label="Remove"></button>
+              <img src="" id="previewImage" class="img-fluid" alt="Preview">
+            </div>
           </div>
-        </form>
       </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="submit-button">Submit</button>
+      </div>
+      </form>
     </div>
   </div>
 </div>
+</div>
 
 <script>
-  (function() {
-    'use strict';
-    const forms = document.querySelectorAll('.needs-validation');
-    Array.from(forms).forEach(form => {
-      form.addEventListener('submit', event => {
-        if (!form.checkValidity()) {
-          event.preventDefault();
-          event.stopPropagation();
-        }
-        form.classList.add('was-validated');
-      }, false);
-    });
-  })();
+  (function () {
+  'use strict';
+  const phoneInput = document.querySelector('#phone'); // Ensure this matches your input field ID
+  const maxLength = 10; // The desired length for the phone number
+  
+  // Listen for the "input" event to validate in real time
+  phoneInput.addEventListener('input', function () {
+    const phoneValue = phoneInput.value.trim(); // Clean up any unwanted spaces
+    const isValid = /^\d+$/.test(phoneValue) && phoneValue.length === maxLength; // Check for digits and length
+
+    if (!isValid) {
+      phoneInput.classList.add('is-invalid'); // Bootstrap invalid styling
+      phoneInput.classList.remove('is-valid');
+      phoneInput.nextElementSibling.textContent = 
+        `Please enter exactly ${maxLength} digits (e.g., "XXXXXXXXXX").`;
+    } else {
+      phoneInput.classList.add('is-valid'); // Bootstrap valid styling
+      phoneInput.classList.remove('is-invalid');
+    }
+  });
+})();
+
+
 
   $(document).ready(function() {
     // Load table data using AJAX
     function loadTableData() {
-            $.ajax({
-                url: "../../model/select-contacts.php", // Path to your PHP script
-                method: "GET",
-                dataType: "json",
-                success: function(data) {
-                    let rows = "";
-                    data.forEach(item => {
-                        rows += `<tr>
+      $.ajax({
+        url: "../../model/select-contacts.php", // Path to your PHP script
+        method: "GET",
+        dataType: "json",
+        success: function(data) {
+          let rows = "";
+          data.forEach(item => {
+            rows += `<tr>
                             <td class="id">${item.id}</td>
+                            <td class="image-path" data-src="../../model/${item.photo}"><img src="../../model/${item.photo}" width="50px"></td>
                             <td><span class="first-name">${item.first_name}</span> <span class="last-name">${item.last_name}</span></td>
                             <td class="email">${item.email}</td>
-                            <td class="phone">${item.phone}</td>
+                            <td class="phone">+880${item.phone}</td>
                             <td><span class="address">${item.address}</span>, <span class="city">${item.city}</span>, <span class="state">${item.state}</span>, <span class="zip">${item.zip}</span>, <span class="country">${item.country}</span></td>
                             <td>
                                 <div class="d-flex gap-2">
@@ -108,17 +136,17 @@
                                 </div>
                             </td>
                          </tr>`;
-                    });
-                    $("#table-body").html(rows);
-                    $("#total").html($(data).length);
-                    
+          });
+          $("#table-body").html(rows);
+          $("#total").html($(data).length);
 
-                },
-                error: function(xhr, status, error) {
-                    console.error("An error occurred:", error);
-                }
-            });
+
+        },
+        error: function(xhr, status, error) {
+          console.error("An error occurred:", error);
         }
+      });
+    }
     // Show form for "Add New"
     $(document).on("click", "#addNewBtn", function() {
       $("#exampleModalLabel").text("Add New Record"); // Update modal title
@@ -142,7 +170,9 @@
         state: row.find(".state").text(),
         zip: row.find(".zip").text(),
         country: row.find(".country").text(),
+        imagePath: row.find(".image-path").data("src"), // Assuming the image path is stored in a data attribute
       };
+
 
       $("#exampleModalLabel").text("Edit Record"); // Update modal title
       $("#submit-button").text("Update").data("action", "edit"); // Set action to "edit"
@@ -156,7 +186,22 @@
       $("#state").val(rowData.state);
       $("#zip").val(rowData.zip);
       $("#country").val(rowData.country);
+
+      // Handle the image preview
+      if (rowData.imagePath) {
+        $("#previewImage").attr("src", rowData.imagePath).show(); // Show existing image
+        $("#removeButton").show(); // Show the remove button
+      } else {
+        $("#previewImage").hide();
+        $("#removeButton").hide();
+      }
+
       $("#exampleModal").modal("show"); // Show the modal
+    });
+    // Remove image button functionality
+    $(document).on("click", "#removeButton", function() {
+      $("#previewImage").hide().attr("src", ""); // Clear the preview image
+      $("#imageInput").val(""); // Clear the input field
     });
 
 
@@ -181,24 +226,33 @@
         } else {
           $("#formId").val("");
         }
-        const formData = {
-          id: $("#formId").val(), // Include ID only for edit
-          firstName: $("#firstName").val(),
-          lastName: $("#lastName").val(),
-          email: $("#email").val(),
-          phone: $("#phone").val(),
-          address: $("#address").val(),
-          city: $("#city").val(),
-          state: $("#state").val(),
-          zip: $("#zip").val(),
-          country: $("#country").val(),
-        };
+        const formData = new FormData();
+
+        // Add standard fields to the FormData object
+        formData.append('id', $("#formId").val()); // Include ID only for edit
+        formData.append('firstName', $("#firstName").val());
+        formData.append('lastName', $("#lastName").val());
+        formData.append('email', $("#email").val());
+        formData.append('phone', $("#phone").val());
+        formData.append('address', $("#address").val());
+        formData.append('city', $("#city").val());
+        formData.append('state', $("#state").val());
+        formData.append('zip', $("#zip").val());
+        formData.append('country', $("#country").val());
+
+        // Add the file to FormData object
+        const file = $("#imageInput")[0].files[0]; // Get the first file from the input
+        if (file) {
+          formData.append('fileToUpload', file); // Append the file to the FormData
+        }
 
         // AJAX request for Add or Edit
         $.ajax({
           url: url,
           type: "POST",
           data: formData,
+          processData: false, // Prevent jQuery from automatically processing data
+          contentType: false, // Let the browser set the correct content type
           success: function(response) {
             alert(response); // Show the server's response
             $("#exampleModal").modal("hide"); // Hide the modal
@@ -212,5 +266,70 @@
         });
       }
     });
+  });
+</script>
+<script>
+  const uploadArea = document.getElementById('uploadArea');
+  const imageInput = document.getElementById('imageInput');
+  const imagePreview = document.getElementById('imagePreview');
+  const previewImage = document.getElementById('previewImage');
+  const removeButton = document.getElementById('removeButton');
+  const fullscreenDrop = document.getElementById('fullscreenDrop');
+
+  // Handle click on upload area
+  uploadArea.addEventListener('click', () => imageInput.click());
+
+  // Handle fullscreen drag and drop
+  window.addEventListener('dragover', (event) => {
+    event.preventDefault();
+    fullscreenDrop.classList.add('active');
+  });
+
+  window.addEventListener('dragleave', (event) => {
+    if (!event.relatedTarget || event.relatedTarget === document.body) {
+      fullscreenDrop.classList.remove('active');
+    }
+  });
+
+  window.addEventListener('drop', (event) => {
+    event.preventDefault();
+    fullscreenDrop.classList.remove('active');
+    const file = event.dataTransfer.files[0];
+    if (file) {
+      handleFile(file);
+      updateFileInput(file);
+    }
+  });
+
+  // Handle file input change
+  imageInput.addEventListener('change', () => {
+    const file = imageInput.files[0];
+    handleFile(file);
+  });
+
+  // Function to display preview
+  function handleFile(file) {
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        previewImage.src = reader.result;
+        imagePreview.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  // Function to update the file input field programmatically
+  function updateFileInput(file) {
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(file);
+    imageInput.files = dataTransfer.files;
+  }
+
+  // Handle remove button click
+  removeButton.addEventListener('click', () => {
+    previewImage.src = '';
+    imagePreview.style.display = 'none';
+    imageInput.value = ''; // Clear the file input
   });
 </script>

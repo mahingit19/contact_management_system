@@ -12,6 +12,7 @@
         <thead>
             <tr>
                 <th scope="col">ID</th>
+                <th scope="col">Image</th>
                 <th scope="col">Full Name</th>
                 <th scope="col">Email</th>
                 <th scope="col">Phone</th>
@@ -36,9 +37,10 @@
                     data.forEach(item => {
                         rows += `<tr>
                             <td class="id">${item.id}</td>
+                            <td class="image-path" data-src="../../model/${item.photo}"><img src="../../model/${item.photo}" width="50px"></td>
                             <td><span class="first-name">${item.first_name}</span> <span class="last-name">${item.last_name}</span></td>
                             <td class="email">${item.email}</td>
-                            <td class="phone">${item.phone}</td>
+                            <td>+880<span class="phone">${item.phone}</span></td>
                             <td><span class="address">${item.address}</span>, <span class="city">${item.city}</span>, <span class="state">${item.state}</span>, <span class="zip">${item.zip}</span>, <span class="country">${item.country}</span></td>
                             <td>
                                 <div class="d-flex gap-2">

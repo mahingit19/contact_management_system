@@ -16,9 +16,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $zip = $conn->real_escape_string($_POST['zip']);
     $country = $conn->real_escape_string($_POST['country']);
 
+    include "image-process.php";
+    
+
     // SQL insert query
-    $sql = "INSERT INTO contacts (first_name, last_name, email, phone, address, city, state, zip, country)
-            VALUES ('$firstName', '$lastName', '$email', '$phone', '$address', '$city', '$state', '$zip', '$country')";
+    $sql = "INSERT INTO contacts (first_name, last_name, email, phone, address, city, state, zip, country, photo)
+            VALUES ('$firstName', '$lastName', '$email', '$phone', '$address', '$city', '$state', '$zip', '$country', '$uploadPath')";
 
     // Execute query and check for success
     if ($conn->query($sql) === TRUE) {
@@ -27,7 +30,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "Error: " . $sql . "<br>" . $conn->error;
     }
 
-    // Close connection
-    $conn->close();
 }
-?>
+
+require "../db/db-close.php";
